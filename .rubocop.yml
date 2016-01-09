@@ -1,0 +1,11 @@
+AllCops:
+  Include:
+    - '**/Rakefile'
+    - '**/.gemspec'
+    - '**/*.rb'
+  Exclude:
+    - 'spec/spec_helper.rb'
+
+Style/Documentation:
+  Exclude:
+    - '**/*.*'

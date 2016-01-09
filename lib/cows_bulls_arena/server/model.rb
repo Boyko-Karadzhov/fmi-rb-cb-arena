@@ -1,4 +1,6 @@
-require 'cows_bulls_arena/server'
-
-module CowsBullsArena::Server::Model
+module CowsBullsArena
+  module Server
+    module Model
+    end
+  end
 end
