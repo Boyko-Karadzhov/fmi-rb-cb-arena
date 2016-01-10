@@ -10,8 +10,6 @@ Gem::Specification.new do |s|
   s.files += Dir['[A-Z]*'] + Dir['spec/**/*']
   s.homepage = 'https://github.com/Boyko-Karadzhov/fmi-rb-cb-arena'
 
-  s.add_runtime_dependency 'branch', '~> 0.1.0'
-
   s.add_development_dependency 'rake', '~> 10.4', '>= 10.4.2'
   s.add_development_dependency 'rspec', '~> 3.3', '>= 3.3.2'
   s.add_development_dependency 'rubocop'
