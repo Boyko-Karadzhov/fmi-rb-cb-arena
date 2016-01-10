@@ -45,6 +45,41 @@ module CowsBullsArena
           @games.each { |_n, g| g.leave(name) }
           @players.delete name
         end
+
+        def validate_player(name, code)
+          valid_pair = @players.key?(name) && @players[name].code == code
+          @players[name].reset if valid_pair
+
+          valid_pair
+        end
+
+        def join(player, game)
+          @games.key?(game) && @games[game].join(player)
+        end
+
+        def leave(player, game)
+          result = @games.key?(game) && @games[game].leave(player)
+          ensure_game game
+          result
+        end
+
+        def ask(player, game, question)
+          return nil unless @games.key?(game)
+
+          @games[game].ask player, question
+        end
+
+        def game_details(game)
+          (@games.key?(game) && @games[game].details) || nil
+        end
+
+        private
+
+        def ensure_game(game)
+          @games.delete(game) if
+            @games.key?(game) &&
+            @games[game].details.players.empty?
+        end
       end
     end
   end

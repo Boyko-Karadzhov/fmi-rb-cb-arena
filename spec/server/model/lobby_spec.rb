@@ -58,4 +58,57 @@ describe CowsBullsArena::Server::Model::Lobby do
     lobby.sign_out name
     expect(lobby.player_list).to be_empty
   end
+
+  it 'should add a player to a game on join' do
+    player_name = 'my man'
+    game_name = 'my game'
+    lobby = Lobby.new
+    lobby.new_game(GameOptions.new(name: game_name))
+    lobby.join player_name, game_name
+    details = lobby.game_details game_name
+    expect(details.players.length).to eq(1)
+    expect(details.players[0]).to eq(player_name)
+  end
+
+  it 'should remove a player from a game on leave' do
+    player1 = 'my man'
+    player2 = 'other man'
+    game_name = 'my game'
+    lobby = Lobby.new
+    lobby.new_game(GameOptions.new(name: game_name, size: 2))
+    lobby.join player1, game_name
+    lobby.join player2, game_name
+    lobby.leave player1, game_name
+    details = lobby.game_details game_name
+    expect(details.players.length).to eq(1)
+    expect(details.players[0]).to eq(player2)
+  end
+
+  it 'should remove the game when all players are gone' do
+    player1 = 'my man'
+    player2 = 'other man'
+    game_name = 'my game'
+    lobby = Lobby.new
+    lobby.new_game(GameOptions.new(name: game_name, size: 2))
+    lobby.join player1, game_name
+    lobby.join player2, game_name
+    lobby.leave player1, game_name
+    lobby.leave player2, game_name
+    expect(lobby.game_list).to be_empty
+  end
+
+  it 'should leave all games on signOut' do
+    player1 = 'my man'
+    player2 = 'other man'
+    game_name = 'my game'
+    lobby = Lobby.new
+    lobby.sign_in player1
+    lobby.new_game(GameOptions.new(name: game_name, size: 2))
+    lobby.join player1, game_name
+    lobby.join player2, game_name
+    lobby.sign_out player1
+    details = lobby.game_details game_name
+    expect(details.players.length).to eq(1)
+    expect(details.players[0]).to eq(player2)
+  end
 end

@@ -12,7 +12,7 @@ module CowsBullsArena
 
           def initialize
             @code = SecureRandom.uuid
-            @seconds_left = ACTIVITY_TIMEOUT
+            reset
           end
 
           def timed_out?
@@ -21,6 +21,10 @@ module CowsBullsArena
 
           def step
             @seconds_left -= 1
+          end
+
+          def reset
+            @seconds_left = ACTIVITY_TIMEOUT
           end
         end
       end
