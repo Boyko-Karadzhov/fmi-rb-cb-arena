@@ -1,5 +1,4 @@
 require 'cows_bulls_arena/server/model/game'
-require 'cows_bulls_arena/server/model/rules'
 
 describe CowsBullsArena::Server::Model::Game do
   Game = CowsBullsArena::Server::Model::Game
