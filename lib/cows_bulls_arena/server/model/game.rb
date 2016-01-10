@@ -1,5 +1,6 @@
 require 'ostruct'
 require 'cows_bulls_arena/server/model/game_options'
+require 'cows_bulls_arena/server/model/game-state'
 require 'cows_bulls_arena/server/model/rules'
 
 module CowsBullsArena
@@ -9,7 +10,6 @@ module CowsBullsArena
         def initialize(options, end_turn_callback = nil, rules = nil)
           @state = State::WAITING
           @options = options
-          @secret = nil
           @current_round = 1
           @end_turn_callback = end_turn_callback
           @rules = rules || CowsBullsArena::Server::Model::Rules
@@ -21,36 +21,48 @@ module CowsBullsArena
             state: @state,
             round: @current_round,
             options: @options,
-            players: @player_rounds.keys)
+            players: @player_rounds.keys,
+            winner: winner)
         end
 
         def join(player)
-          if !@player_rounds.key?(player) && @state == State::WAITING
-            @player_rounds[player] = []
-            ensure_state
-            true
-          else
-            false
-          end
+          return false if
+            @player_rounds.key?(player) || @state != State::WAITING
+
+          @player_rounds[player] = []
+          ensure_state
+          true
         end
 
         def leave(player)
-          if @player_rounds.key? player
-            @player_rounds.delete player
-            ensure_state
-            true
-          else
-            false
-          end
+          return false unless @player_rounds.key? player
+
+          @player_rounds.delete player
+          ensure_state
+          true
         end
 
-        module State
-          WAITING = 'waiting'
-          STARTED = 'started'
-          FINISHED = 'finished'
+        def ask(player, question)
+          return nil unless can_ask? player, question
+
+          @player_rounds[player] << OpenStruct.new(
+            round: @current_round,
+            time: Time.now.to_i,
+            question: question,
+            answer: @rules.evaluate(@secret, question)
+          )
+
+          ensure_state
+          @player_rounds[player].last
         end
 
         private
+
+        def can_ask?(player, question)
+          @state == State::STARTED &&
+            @rules.validate_question(question) && @player_rounds.key?(player) &&
+            @player_rounds[player].length < @current_round
+        end
 
         def ensure_state
           if @state == State::WAITING && @player_rounds.size == @options.size
@@ -59,7 +71,8 @@ module CowsBullsArena
           end
 
           @state = State::FINISHED if should_finish
-          end_turn if all_players_are_done
+          end_turn if
+            @player_rounds.values.all? { |r| r.length == @current_round }
         end
 
         def start
@@ -71,8 +84,7 @@ module CowsBullsArena
 
         def should_finish
           @player_rounds.empty? ||
-            @current_round > @options.max_rounds ||
-            all_players_guessed_right
+            @current_round > @options.max_rounds || all_players_guessed_right
         end
 
         def round_timeout(round)
@@ -83,14 +95,11 @@ module CowsBullsArena
         end
 
         def end_turn
-          @player_rounds.each_value do |rounds|
-            rounds << nil if rounds.length < @current_round
-          end
+          @player_rounds.each_value { |r| r << nil if r.size < @current_round }
 
           @current_round += 1
           @state = State::FINISHED if
-            @current_round > @options.max_rounds ||
-            all_players_guessed_right
+            @current_round > @options.max_rounds || all_players_guessed_right
 
           round_timeout @current_round if @state == State::STARTED
           @end_turn_callback.call(details) if @end_turn_callback
@@ -102,8 +111,24 @@ module CowsBullsArena
           end
         end
 
-        def all_players_are_done
-          @player_rounds.values.all? { |r| r.length == @current_round }
+        def winner
+          return nil if @state != State::FINISHED
+          current = nil
+          @player_rounds
+            .each_key { |p| current = p if finished_better? p, current }
+
+          current
+        end
+
+        def finished_better?(player1, player2)
+          !last_round(player1).nil? && (player2.nil? ||
+              last_round(player1).round < last_round(player2).round ||
+              last_round(player1).time < last_round(player2).time)
+        end
+
+        def last_round(player)
+          @player_rounds[player].reverse
+            .find { |r| !r.nil? && r.answer.bulls == 4 }
         end
       end
     end
