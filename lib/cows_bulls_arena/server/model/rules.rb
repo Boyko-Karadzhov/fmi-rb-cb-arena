@@ -1,17 +1,10 @@
+require 'ostruct'
+
 module CowsBullsArena
   module Server
     module Model
-      module CowsBulls
+      module Rules
         ALLOWED_CHARACTERS = %w(0 1 2 3 4 5 6 7 8 9)
-
-        class Result
-          attr_reader :bulls, :cows
-
-          def initialize(bulls, cows)
-            @bulls = bulls
-            @cows = cows
-          end
-        end
 
         def self.new_secret
           ALLOWED_CHARACTERS.sample 4
@@ -25,12 +18,12 @@ module CowsBullsArena
             cows += 1 if idx != i && !idx.nil?
           end
 
-          Result.new(bulls, cows)
+          OpenStruct.new(bulls: bulls, cows: cows)
         end
 
         def self.validate_question(question)
           question.is_a?(Array) && question.length == 4 &&
-            question.all? { |c| ALLOWED_CHARACTERS.include?(c) } &&
+            question.all? { |c| ALLOWED_CHARACTERS.include? c } &&
             question.uniq.length == question.length
         end
       end
