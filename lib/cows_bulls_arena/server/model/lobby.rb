@@ -38,6 +38,13 @@ module CowsBullsArena
 
           @players[name] = PlayerRecord.new
         end
+
+        def sign_out(name)
+          return unless @players.key? name
+
+          @games.each { |_n, g| g.leave(name) }
+          @players.delete name
+        end
       end
     end
   end

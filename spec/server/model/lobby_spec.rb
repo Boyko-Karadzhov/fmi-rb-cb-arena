@@ -44,10 +44,18 @@ describe CowsBullsArena::Server::Model::Lobby do
     expect(lobby.sign_in('my player')).not_to be_nil
   end
 
-  it 'should return false for a non-unique player signIn' do
+  it 'should return false for a non-unique player sign_in' do
     name = 'my player'
     lobby = Lobby.new
     lobby.sign_in name
     expect(lobby.sign_in(name)).to be_nil
+  end
+
+  it 'should remove player from list on sign_out' do
+    name = 'my player'
+    lobby = Lobby.new
+    lobby.sign_in name
+    lobby.sign_out name
+    expect(lobby.player_list).to be_empty
   end
 end
