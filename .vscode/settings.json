@@ -15,6 +15,9 @@
   // Controls the indentation of wrapped lines. Can be one of 'none', 'same' or 'indent'.
   "editor.wrappingIndent": "indent",
 
+	// Controls whether the editor should render whitespace characters
+	"editor.renderWhitespace": false,
+
   // When enabled, will trim trailing whitespace when you save a file.
   "files.trimTrailingWhitespace": true
 }
