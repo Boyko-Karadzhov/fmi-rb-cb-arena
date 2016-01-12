@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "start": "node \".\\index.js\""
+  },
+  "dependencies": {
+    "express.io": "^1.1.13",
+    "faye": "^1.1.2",
+    "path": "^0.12.7"
+  }
+}
