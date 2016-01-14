@@ -5,7 +5,8 @@ AllCops:
     - '**/*.rb'
   Exclude:
     - 'spec/spec_helper.rb'
+    - 'lib/cows_bulls_arena/node/**/*'
 
 Style/Documentation:
   Exclude:
-    - '**/*.*'
+    - '**/*'

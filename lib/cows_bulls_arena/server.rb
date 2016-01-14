@@ -4,23 +4,32 @@ require 'eventmachine'
 
 module CowsBullsArena
   module Server
-    def self.start
-      Faye::WebSocket.load_adapter('thin')
+    class CowsBullsServer
+      def start
+        Faye::WebSocket.load_adapter('thin')
+        bayeux = Faye::RackAdapter.new mount: '/faye', timeout: 25
 
-      bayeux = Faye::RackAdapter.new(:mount => '/faye', :timeout => 25)
+        Thread.new do
+          sleep 1
+          subscribe
+        end
 
-      Thread.new do
-        sleep 1
-        EM.run {
-          bayeux.get_client().subscribe('/from-node') do |channel|
-            p channel
-          end
-
-
-        }
+        Thin::Server.start '0.0.0.0', 3000, bayeux
       end
 
-      Thin::Server.start('0.0.0.0', 3000, bayeux)
+      private
+
+      def subscribe
+        EM.run do
+          bayeux.get_client.subscribe('/server') do |channel|
+            p channel
+          end
+        end
+      end
+    end
+
+    def self.start
+      CowsBullsServer.new.start
     end
   end
 end
