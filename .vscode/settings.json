@@ -16,7 +16,7 @@
   "editor.wrappingIndent": "indent",
 
 	// Controls whether the editor should render whitespace characters
-	"editor.renderWhitespace": false,
+	"editor.renderWhitespace": true,
 
   // When enabled, will trim trailing whitespace when you save a file.
   "files.trimTrailingWhitespace": true

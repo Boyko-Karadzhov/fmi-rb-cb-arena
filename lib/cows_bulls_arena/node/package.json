@@ -3,6 +3,8 @@
     "start": "node \".\\index.js\""
   },
   "dependencies": {
+    "coffee-script": "^1.10.0",
+    "connect": "^3.4.0",
     "express.io": "^1.1.13",
     "faye": "^1.1.2",
     "path": "^0.12.7"
