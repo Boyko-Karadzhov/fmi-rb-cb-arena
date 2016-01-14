@@ -3,9 +3,9 @@ module CowsBullsArena
     module Model
       class Game
         module State
-          WAITING = 'waiting'
-          STARTED = 'started'
-          FINISHED = 'finished'
+          WAITING = 'waiting'.freeze
+          STARTED = 'started'.freeze
+          FINISHED = 'finished'.freeze
         end
       end
     end

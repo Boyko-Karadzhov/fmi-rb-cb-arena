@@ -127,7 +127,8 @@ module CowsBullsArena
         end
 
         def last_round(player)
-          @player_rounds[player].reverse
+          @player_rounds[player]
+            .reverse
             .find { |r| !r.nil? && r.answer.bulls == 4 }
         end
       end

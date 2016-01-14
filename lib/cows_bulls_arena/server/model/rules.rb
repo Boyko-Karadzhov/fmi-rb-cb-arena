@@ -4,7 +4,7 @@ module CowsBullsArena
   module Server
     module Model
       module Rules
-        ALLOWED_CHARACTERS = %w(0 1 2 3 4 5 6 7 8 9)
+        ALLOWED_CHARACTERS = %w(0 1 2 3 4 5 6 7 8 9).freeze
 
         def self.new_secret
           ALLOWED_CHARACTERS.sample 4
