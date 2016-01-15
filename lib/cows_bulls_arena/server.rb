@@ -16,7 +16,7 @@ module CowsBullsArena
 
       def start
         EM.run do
-          Signal.trap('INT')  { EventMachine.stop }
+          Signal.trap('INT') { EventMachine.stop }
           Signal.trap('TERM') { EventMachine.stop }
           Rack::Handler.get('thin').run @bayeux, Port: 3000, signals: false
           subscribe

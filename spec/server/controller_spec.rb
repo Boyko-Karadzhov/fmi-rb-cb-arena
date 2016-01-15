@@ -15,6 +15,24 @@ describe CowsBullsArena::Server::Controller do
     end
   end
 
+  Controller.instance_methods(false).each do |action|
+    next if action == :sign_in
+    client = ClientMock.new
+    controller = Controller.new
+    next unless controller.method(action).parameters.length == 2
+    client_id = '5'
+    data = { 'ticket' => nil }
+    controller.client = client
+
+    it "should emit sign in fail on invalid ticket at #{action}." do
+      controller.public_send action, client_id, data
+
+      expect(client.publications.size).to eq(1)
+      message = client.publications[0][:data]
+      expect(message['action']).to eq('sign-in-fail')
+    end
+  end
+
   it 'should emit ticket on sign in' do
     client = ClientMock.new
     controller = Controller.new

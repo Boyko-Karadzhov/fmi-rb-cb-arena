@@ -5,10 +5,19 @@ module CowsBullsArena
         attr_accessor :name, :size, :max_rounds, :round_timeout
 
         def initialize(options = {})
-          @name = options[:name] || nil
-          @size = options[:size] || 1
-          @max_rounds = options[:max_rounds] || 20
-          @round_timeout = options[:round_timeout] || 2 * 60
+          @name = options[:name] || options['name'] || nil
+          @name = @name.strip unless @name.nil?
+
+          @size = options[:size] || options['size'] || 1
+          @max_rounds = options[:max_rounds] || options['max-rounds'] || 20
+
+          @round_timeout = options[:round_timeout] || options['round-timeout']
+          @round_timeout = 2 * 60 if @round_timeout.nil?
+        end
+
+        def validate
+          !@name.nil? && !@name.empty? && @size >= 1 && @max_rounds >= 1 &&
+            @round_timeout >= 10 && @round_timeout <= 590
         end
       end
     end
