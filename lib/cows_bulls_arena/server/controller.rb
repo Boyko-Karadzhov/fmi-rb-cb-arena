@@ -5,10 +5,10 @@ module CowsBullsArena
     class Controller
       attr_accessor :client
 
-      def initialize
+      def initialize(lobby = nil)
         @client = nil
         @active_sessions = {}
-        @lobby = CowsBullsArena::Server::Model::Lobby.new
+        @lobby = lobby || CowsBullsArena::Server::Model::Lobby.new
       end
 
       def sign_in(client_id, data)
@@ -52,7 +52,7 @@ module CowsBullsArena
             if @lobby.new_game options, method(:end_turn_callback)
               data['game'] = options.name
               broadcast_game_list
-              join data
+              join client_id, data
             else
               new_game_fail client_id, :unique, options.name
             end
@@ -72,7 +72,7 @@ module CowsBullsArena
             send client_id, 'join', data['game']
             broadcast_game_details data['game']
           else
-            send client_id, 'lobby-fail', "Could not join '#{data.name}'."
+            send client_id, 'lobby-fail', "Could not join '#{data['game']}'."
           end
         else
           fail_sign_in client_id
@@ -167,7 +167,7 @@ module CowsBullsArena
       def broadcast_game_list
         game_list = @lobby.game_list
         @active_sessions.each_value do |client_id|
-          send client_id, 'lobby_game_list', game_list
+          send client_id, 'lobby-game-list', game_list
         end
       end
 
