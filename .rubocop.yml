@@ -10,3 +10,33 @@ AllCops:
 Style/Documentation:
   Exclude:
     - '**/*'
+
+# For review:
+
+# Offense count: 2
+Metrics/AbcSize:
+  Max: 22
+
+# Offense count: 2
+# Configuration parameters: CountComments.
+Metrics/ClassLength:
+  Max: 175
+
+# Offense count: 1
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+# Offense count: 1
+# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
+# URISchemes: http, https
+Metrics/LineLength:
+  Max: 82
+
+# Offense count: 2
+# Configuration parameters: CountComments.
+Metrics/MethodLength:
+  Max: 21
+
+# Offense count: 1
+Metrics/PerceivedComplexity:
+  Max: 10

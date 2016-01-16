@@ -25,6 +25,10 @@ describe CowsBullsArena::Server::Controller do
     def validate(*_)
       true
     end
+
+    def details_viewmodel(details)
+      details
+    end
   end
 
   def define_singleton_method_by_proc(obj, name, block)

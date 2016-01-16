@@ -1,0 +1,1 @@
+ruby -Ilib .\bin\cows_bulls_arena

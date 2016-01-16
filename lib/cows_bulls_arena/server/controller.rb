@@ -48,17 +48,8 @@ module CowsBullsArena
           return unless data.key? 'options'
 
           options = Model::GameOptions.new data['options']
-          if options.validate
-            if @lobby.new_game options, method(:end_turn_callback)
-              data['game'] = options.name
-              broadcast_game_list
-              join client_id, data
-            else
-              new_game_fail client_id, :unique, options.name
-            end
-          else
-            new_game_fail client_id, :validation
-          end
+          create_game_with_options client_id, options, data if options.valid?
+          new_game_fail client_id, :validation unless options.valid?
         else
           fail_sign_in client_id
         end
@@ -83,7 +74,7 @@ module CowsBullsArena
         if validate data
           return unless data.key? 'game'
 
-          details = @lobby.game_details data['game']
+          details = details_viewmodel(@lobby.game_details(data['game']))
           send client_id, 'game-details', details unless details.nil?
 
           fail_message = "Could not get details of '#{data['game']}'."
@@ -124,7 +115,7 @@ module CowsBullsArena
               'round' => round)
 
             broadcast_game_details game
-            broadcast_answer game, player, result.answer.marshal_dump, round
+            broadcast_answer game, player, result.answer, round
           end
         else
           fail_sign_in client_id
@@ -172,7 +163,7 @@ module CowsBullsArena
       end
 
       def broadcast_game_details(game)
-        details = @lobby.game_details game
+        details = details_viewmodel(@lobby.game_details(game))
         broadcast_to_game game, 'game-details', details
       end
 
@@ -199,6 +190,23 @@ module CowsBullsArena
 
       def end_turn_callback(details)
         broadcast_game_details details.options.name
+      end
+
+      def details_viewmodel(details)
+        return nil if details.nil?
+        result = details.marshal_dump
+        result[:options] = result[:options].to_h unless result[:options].nil?
+        result
+      end
+
+      def create_game_with_options(client_id, options, data)
+        if @lobby.new_game options, method(:end_turn_callback)
+          data['game'] = options.name
+          broadcast_game_list
+          join client_id, data
+        else
+          new_game_fail client_id, :unique, options.name
+        end
       end
     end
   end

@@ -12,26 +12,26 @@ describe CowsBullsArena::Server::Model::Rules do
     secret = %w(1 2 3 4)
     question = %w(1 2 3 4)
     result = Rules.evaluate secret, question
-    expect(result.cows).to eq(0)
-    expect(result.bulls).to eq(4)
+    expect(result[:cows]).to eq(0)
+    expect(result[:bulls]).to eq(4)
 
     secret = %w(1 2 3 4)
     question = %w(5 6 7 8)
     result = Rules.evaluate secret, question
-    expect(result.cows).to eq(0)
-    expect(result.bulls).to eq(0)
+    expect(result[:cows]).to eq(0)
+    expect(result[:bulls]).to eq(0)
 
     secret = %w(1 2 3 4)
     question = %w(1 3 2 4)
     result = Rules.evaluate secret, question
-    expect(result.cows).to eq(2)
-    expect(result.bulls).to eq(2)
+    expect(result[:cows]).to eq(2)
+    expect(result[:bulls]).to eq(2)
 
     secret = %w(0 3 8 7)
     question = %w(0 1 2 3)
     result = Rules.evaluate secret, question
-    expect(result.cows).to eq(1)
-    expect(result.bulls).to eq(1)
+    expect(result[:cows]).to eq(1)
+    expect(result[:bulls]).to eq(1)
   end
 
   it 'should return true for a valid question' do

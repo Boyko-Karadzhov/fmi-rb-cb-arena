@@ -18,7 +18,7 @@ module CowsBullsArena
             cows += 1 if idx != i && !idx.nil?
           end
 
-          OpenStruct.new(bulls: bulls, cows: cows)
+          { bulls: bulls, cows: cows }
         end
 
         def self.validate_question(question)

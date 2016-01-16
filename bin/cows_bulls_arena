@@ -1,3 +1,6 @@
 require 'cows_bulls_arena'
 
+current_path = File.expand_path(File.dirname(__FILE__))
+spawn "node #{current_path}/../lib/cows_bulls_arena/node/index.js"
+
 CowsBullsArena::Server.start

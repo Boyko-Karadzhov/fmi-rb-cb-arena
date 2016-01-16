@@ -107,7 +107,9 @@ module CowsBullsArena
 
         def all_players_guessed_right
           @player_rounds.values.all? do |rounds|
-            !rounds.empty? && rounds.any? { |r| !r.nil? && r.answer.bulls == 4 }
+            !rounds.empty? && rounds.any? do |r|
+              !r.nil? && r.answer[:bulls] == 4
+            end
           end
         end
 
@@ -129,7 +131,7 @@ module CowsBullsArena
         def last_round(player)
           @player_rounds[player]
             .reverse
-            .find { |r| !r.nil? && r.answer.bulls == 4 }
+            .find { |r| !r.nil? && r.answer[:bulls] == 4 }
         end
       end
     end
