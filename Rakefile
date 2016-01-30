@@ -12,3 +12,13 @@ RuboCop::RakeTask.new(:rubocop) do |task|
 end
 
 task default: [:spec, :rubocop]
+
+task :start do
+  exec 'ruby -Ilib ./bin/cows_bulls_arena'
+end
+
+task :install do
+  Dir.chdir('./lib/cows_bulls_arena/node') do
+    exec 'npm install'
+  end
+end
